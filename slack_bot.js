@@ -71,6 +71,7 @@ if (!process.env.token) {
 
 var Botkit = require('./lib/Botkit.js');
 var os = require('os');
+var exec = require('child_process').exec;
 
 var controller = Botkit.slackbot({
     debug: true
@@ -100,6 +101,13 @@ controller.hears(['hello', 'hi'], 'direct_message,direct_mention,mention', funct
         } else {
             bot.reply(message, 'Hello.');
         }
+    });
+});
+
+controller.hears(['cmdhelp (.*)'], 'direct_message,direct_mention,mention', function(bot, message) {
+    var cmd = message.match[1];
+    exec('help ' + cmd, function(error, stdout, stderr) {
+        bot.reply(message, `help for ${cmd}:\r\n ${stdout}`);
     });
 });
 
